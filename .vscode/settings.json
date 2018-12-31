@@ -4,5 +4,6 @@
   },
   "[typescript]": {
     "editor.formatOnSave": true
-  }
+  },
+  "eslint.enable": false
 }
