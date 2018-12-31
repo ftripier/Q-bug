@@ -9,7 +9,7 @@ verify_ssl = true
 websockets = "*"
 
 [scripts]
-start = "python server.py ${DEBUG_SERVER_PORT}"
+start = "server/server.sh"
 
 [requires]
 python_version = "3.7"

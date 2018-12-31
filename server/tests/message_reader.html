@@ -5,12 +5,11 @@
   </head>
   <body>
     <script>
-      var ws = new WebSocket("ws://0.0.0.0:8765/"),
-        messages = document.createElement("ul");
+      var ws = new WebSocket('ws://0.0.0.0:8765/'),
+        messages = document.createElement('ul');
       ws.onmessage = function(event) {
-        console.log(event);
-        var messages = document.getElementsByTagName("ul")[0],
-          message = document.createElement("li"),
+        var messages = document.getElementsByTagName('ul')[0],
+          message = document.createElement('li'),
           content = document.createTextNode(event.data);
         message.appendChild(content);
         messages.appendChild(message);
