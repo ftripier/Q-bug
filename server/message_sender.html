@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket demo</title>
+  </head>
+  <body>
+    <form id="message">
+      <label for="message">Send a message: </label>
+      <input type="text" name="message" id="message-input" />
+      <input type="submit" value="send" />
+    </form>
+    <script>
+      let ws = new WebSocket("ws://0.0.0.0:8765/");
+      let messageForm = document.querySelector("#message");
+      let messageInput = document.querySelector("#message-input");
+      messageForm.onsubmit = e => {
+        e.preventDefault();
+        ws.send(messageInput.value);
+        messageInput.value = "";
+        return false;
+      };
+    </script>
+  </body>
+</html>
