@@ -1,8 +1,19 @@
 import sys
-
 import asyncio
 import datetime
 import websockets
+import logging
+
+def init_logger():
+    logger = logging.getLogger()
+
+    h = logging.StreamHandler(sys.stdout)
+    h.flush = sys.stdout.flush
+    logger.addHandler(h)
+
+    return logger
+
+logger = init_logger()
 
 SERVER_PORT = None
 
@@ -35,12 +46,12 @@ async def sync(websocket, path):
         await websocket.send(STATE['value'])
         async for message in websocket:
             STATE['value'] = message
-            print(f"Received message \n{message}", flush=True)
+            logger.info(f"Received message \n{message}")
             await notify_all_clients(STATE['value'])
     finally:
         unregister(websocket)
 
-print(f"Serving messages on port {SERVER_PORT}", flush=True)
+logger.info(f"Serving messages on port {SERVER_PORT}")
 start_server = websockets.serve(sync, '0.0.0.0', SERVER_PORT)
 
 asyncio.get_event_loop().run_until_complete(start_server)

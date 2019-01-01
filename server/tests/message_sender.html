@@ -5,18 +5,18 @@
   </head>
   <body>
     <form id="message">
-      <label for="message">Send a message: </label>
-      <input type="text" name="message" id="message-input" />
-      <input type="submit" value="send" />
+      <div><label for="message">Send a message: </label></div>
+      <textarea name="message" cols="100" rows="10" id="message-input"></textarea>
+      <div><input type="submit" value="send" /></div>
     </form>
     <script>
-      let ws = new WebSocket("ws://0.0.0.0:8765/");
-      let messageForm = document.querySelector("#message");
-      let messageInput = document.querySelector("#message-input");
+      let ws = new WebSocket('ws://0.0.0.0:8765/');
+      let messageForm = document.querySelector('#message');
+      let messageInput = document.querySelector('#message-input');
       messageForm.onsubmit = e => {
         e.preventDefault();
         ws.send(messageInput.value);
-        messageInput.value = "";
+        messageInput.value = '';
         return false;
       };
     </script>
