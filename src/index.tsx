@@ -1,12 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ENV from './environment';
-import quilToJSON from 'quil-json-js';
+import store from './state/store';
+import { initializeApplication } from './state/actionCreators';
 
-const ws = new WebSocket(`ws://0.0.0.0:${ENV.REACT_APP_DEBUG_SERVER_PORT}`);
-
-ws.onmessage = event => {
-  console.log(quilToJSON(event.data));
-};
+store.dispatch(initializeApplication());
 
 ReactDOM.render(<div />, document.querySelector('#root'));
