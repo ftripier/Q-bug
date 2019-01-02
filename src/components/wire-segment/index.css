@@ -1,0 +1,5 @@
+.circuit-wire-segment {
+  border: 1px solid #414a4c;
+  position: absolute;
+  height: 0;
+}

@@ -1,0 +1,13 @@
+.circuit-gate {
+  position: absolute;
+  border: 1px solid #414a4c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circuit-gate-label {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #414a4c;
+  font-size: 1.33rem;
+}

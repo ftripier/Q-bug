@@ -21,14 +21,20 @@
     "tslint": "^5.12.0",
     "tslint-config-prettier": "^1.17.0",
     "typescript": "^3.1.6",
-    "quil-json-js": "ftripier/quil-json-js"
+    "quil-json-js": "ftripier/quil-json-js",
+    "@storybook/react": "^4.1.4",
+    "@storybook/addon-actions": "^4.1.4",
+    "@storybook/addon-links": "^4.1.4",
+    "@kadira/storybook": "^2.21.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "tslint -c tslint.json src/**/*.tsx src/**/*.ts"
+    "lint": "tslint -c tslint.json src/**/*.tsx src/**/*.ts",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "browserslist": [
     ">0.2%",
