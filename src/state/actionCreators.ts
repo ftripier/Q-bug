@@ -1,4 +1,4 @@
-import { INITIALIZE_APPLICATION, SET_CIRCUIT_STATE } from './constants';
+import { INITIALIZE_APPLICATION, SET_CIRCUIT_STATE, SET_WINDOW_SIZE } from './constants';
 
 export interface Action {
   type: string;
@@ -12,4 +12,9 @@ export const initializeApplication = (): Action => ({ type: INITIALIZE_APPLICATI
 export const setCircuitState = (circuit: any): Action => ({
   type: SET_CIRCUIT_STATE,
   payload: { circuit }
+});
+
+export const setWindowSize = (size: number[]): Action => ({
+  type: SET_WINDOW_SIZE,
+  payload: { size }
 });

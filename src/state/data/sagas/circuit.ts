@@ -1,4 +1,4 @@
-import { take, call, put } from 'redux-saga/effects';
+import { take, call, put, takeLatest } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import quilToJSON from 'quil-json-js';
 import { INITIALIZE_APPLICATION } from '../../constants';
@@ -19,14 +19,15 @@ function createSocketChannel(socket: WebSocket) {
   });
 }
 
+function* processNewCircuit(payload: any) {
+  const converted = yield call(quilToJSON, payload);
+  yield put(setCircuitState(converted));
+}
+
 export default function* readCircuitSaga() {
   yield take(INITIALIZE_APPLICATION);
   const socket = yield call(createSocketConnection);
   const socketChannel = yield call(createSocketChannel, socket);
 
-  while (true) {
-    const payload = yield take(socketChannel);
-    const converted = yield call(quilToJSON, payload);
-    yield put(setCircuitState(converted));
-  }
+  yield takeLatest(socketChannel, processNewCircuit);
 }
