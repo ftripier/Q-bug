@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import circuit from './ciruit';
+import circuit from './circuit';
 
 export default combineReducers({
   circuit

@@ -4,6 +4,12 @@ A work-in-progress web-based visual debugger for Quil programs.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Development workflow for UI
+
+1. Run the server with ./scripts/run.sh
+2. Once shelled into the server, run `pipenv run start`
+3. In a different terminal, on your host machine, start the dev server with `REACT_APP_DEBUG_SERVER_PORT=8765 npm run start`
+
 ## Available Scripts
 
 In the project directory, you can run:
