@@ -78,7 +78,7 @@ interface GateColumn {
 const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLayout[] => {
   const gateWithMasks = gates.map(gate => ({
     ...gate,
-    wireMask: gate.qubits.reduce((mask, qubit) => mask & (1 << qubit), 0)
+    wireMask: gate.qubits.reduce((mask, qubit) => mask | (1 << qubit), 0)
   }));
   // Here we fold over gates, keeping a track over which wires are occupied by a
   // gate. Once all wires on a given column are occupied, we find a new column to add the gate to.
@@ -96,7 +96,7 @@ const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLa
         return columns.concat({ gates: [gate], wireMask });
       }
       columnThatGateFitsInto.gates.push(gate);
-      columnThatGateFitsInto.wireMask = columnThatGateFitsInto.wireMask & wireMask;
+      columnThatGateFitsInto.wireMask = columnThatGateFitsInto.wireMask | wireMask;
       return columns;
     },
     []
@@ -125,12 +125,12 @@ const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLa
           height = bottom - top;
         }
         newGates.push({
+          ...gate,
           top,
           left,
           width: circuitLayoutConfig.gate.width,
           height,
-          sparse,
-          qubits: gate.qubits
+          sparse
         });
       }
       return gates.concat(newGates);
@@ -146,8 +146,6 @@ export const getCircuitLayout = createSelector(
     const wires = getWiresLayout(windowSize, numberOfQubits);
     const gateInstrs = circuit.filter(({ type }) => type === CIRCUIT_INSTRUCTION_TYPES.GATE);
     const gates = getGatesLayout(wires, gateInstrs);
-    // lay out gates with constant width, finding the topmost intersecting wire
-    // and the bottom intersecting wire, and setting height and top accordingly
     return {
       numberOfQubits,
       wires,

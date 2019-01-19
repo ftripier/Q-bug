@@ -1,8 +1,8 @@
-import groversAlgorithm from '../../../../testing/fixtures/groversAlgorithm';
+import groversAlgorithm from '../../../testing/fixtures/groversAlgorithm';
 import rootReducer, { initialState } from '../../reducer';
 import circuitLayoutConfig from '../../../components/circuit/circuitLayoutConfig';
 import { setCircuitState, setWindowSize } from '../../actionCreators';
-import { getCircuitLayout } from './layout';
+import { getCircuitLayout, getWindowSize } from './layout';
 
 const STANDARD_WINDOW = [1440, 600];
 
@@ -61,6 +61,13 @@ const rayBoxIntersection = (ray: number, box: BoundingBox) => {
   return ray >= box.top && ray <= box.top + box.height;
 };
 
+describe('getWindowSize', () => {
+  it('gets the window size', () => {
+    const state = rootReducer(initialState, setWindowSize(STANDARD_WINDOW));
+    expect(getWindowSize(state)).toEqual(STANDARD_WINDOW);
+  });
+});
+
 describe('getCircuitLayout', () => {
   it('returns something', () => {
     expect(getCircuitLayout(prepareCircuitState(groversAlgorithm, STANDARD_WINDOW))).toBeTruthy();
@@ -84,6 +91,17 @@ describe('getCircuitLayout', () => {
         expect(wires[i].top - wires[i - 1].top).toBeGreaterThanOrEqual(
           (circuitLayoutConfig.wire.height >> 1) + circuitLayoutConfig.wire.margin
         );
+      }
+    });
+
+    it('has positive values for position and size of wires', () => {
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
+      const { wires } = getCircuitLayout(state);
+      for (let i = 0; i < wires.length; i += 1) {
+        const { top, left, width } = wires[i];
+        expect(top).toBeGreaterThanOrEqual(0);
+        expect(left).toBeGreaterThanOrEqual(0);
+        expect(width).toBeGreaterThanOrEqual(0);
       }
     });
   });
@@ -111,6 +129,18 @@ describe('getCircuitLayout', () => {
           const wire = wires[gate.qubits[j]];
           expect(rayBoxIntersection(wire.top, gate)).toBeTruthy();
         }
+      }
+    });
+
+    it('has a positive value for position and size of gates', () => {
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
+      const { gates } = getCircuitLayout(state);
+      for (let i = 0; i < gates.length; i += 1) {
+        const { top, left, width, height } = gates[i];
+        expect(top).toBeGreaterThanOrEqual(0);
+        expect(left).toBeGreaterThanOrEqual(0);
+        expect(width).toBeGreaterThanOrEqual(0);
+        expect(height).toBeGreaterThanOrEqual(0);
       }
     });
   });

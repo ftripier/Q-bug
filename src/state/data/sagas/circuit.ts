@@ -33,7 +33,14 @@ function* processNewCircuit(payload: any) {
 
 export default function* readCircuitSaga() {
   yield take(INITIALIZE_APPLICATION);
-  const socket = yield call(createSocketConnection);
+  let socket;
+  try {
+    socket = yield call(createSocketConnection);
+  } catch (e) {
+    console.error(e);
+    return;
+  }
+
   const socketChannel = yield call(createSocketChannel, socket);
 
   yield takeLatest(socketChannel, processNewCircuit);
