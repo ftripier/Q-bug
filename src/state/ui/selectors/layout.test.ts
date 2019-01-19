@@ -57,6 +57,10 @@ const boundingBoxOverlap = (a: BoundingBox, b: BoundingBox): string => {
   return COLLISIONS[collisionMask];
 };
 
+const rayBoxIntersection = (ray: number, box: BoundingBox) => {
+  return ray >= box.top && ray <= box.top + box.height;
+};
+
 describe('getCircuitLayout', () => {
   it('returns something', () => {
     expect(getCircuitLayout(prepareCircuitState(groversAlgorithm, STANADARD_WINDOW))).toBeTruthy();
@@ -94,6 +98,18 @@ describe('getCircuitLayout', () => {
         for (let j = i + 1; j < gates.length; j += 1) {
           const b = gates[i];
           expect(boundingBoxOverlap(a, b)).toEqual('NO COLLISION');
+        }
+      }
+    });
+
+    it("lays out gates such that they cover all the qubit wires they're supposed to", () => {
+      const state = prepareCircuitState(groversAlgorithm, STANADARD_WINDOW);
+      const { gates, wires } = getCircuitLayout(state);
+      for (let i = 0; i < gates.length; i += 1) {
+        const gate = gates[i];
+        for (let j = 0; j < gate.qubits.length; j += 1) {
+          const wire = wires[gate.qubits[j]];
+          expect(rayBoxIntersection(wire.top, gate)).toBeTruthy();
         }
       }
     });
