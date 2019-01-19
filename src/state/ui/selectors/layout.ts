@@ -55,7 +55,7 @@ const getWiresLayout = (windowSize: number[], numberOfQubits: number): WireLayou
 };
 
 // determines if a gate is sparse - that is, if the qubits
-// it affects don't form a continous block
+// it affects don't form a continuous block
 const isSparse = (qubits: number[]): boolean => {
   for (let i = 1; i < qubits.length; i += 1) {
     const qubit = qubits[i];
