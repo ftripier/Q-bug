@@ -4,7 +4,7 @@ import circuitLayoutConfig from '../../../components/circuit/circuitLayoutConfig
 import { setCircuitState, setWindowSize } from '../../actionCreators';
 import { getCircuitLayout } from './layout';
 
-const STANADARD_WINDOW = [1440, 600];
+const STANDARD_WINDOW = [1440, 600];
 
 const prepareCircuitState = (circuit: any[], size: number[]) => {
   let state = rootReducer(initialState, setCircuitState(circuit));
@@ -63,22 +63,22 @@ const rayBoxIntersection = (ray: number, box: BoundingBox) => {
 
 describe('getCircuitLayout', () => {
   it('returns something', () => {
-    expect(getCircuitLayout(prepareCircuitState(groversAlgorithm, STANADARD_WINDOW))).toBeTruthy();
+    expect(getCircuitLayout(prepareCircuitState(groversAlgorithm, STANDARD_WINDOW))).toBeTruthy();
   });
 
   it('returns the number of qubits in the circuit', () => {
-    const state = prepareCircuitState(groversAlgorithm, STANADARD_WINDOW);
+    const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
     expect(getCircuitLayout(state).numberOfQubits).toBe(3);
   });
 
   describe('wire layout', () => {
     it('lays out the middle wire in the center of the window for an uneven amount of qubits', () => {
-      const state = prepareCircuitState(groversAlgorithm, STANADARD_WINDOW);
-      expect(getCircuitLayout(state).wires[1].top).toEqual(STANADARD_WINDOW[1] >> 1);
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
+      expect(getCircuitLayout(state).wires[1].top).toEqual(STANDARD_WINDOW[1] >> 1);
     });
 
     it("lays out qubits such that there is at least half the layout configuration's wire height and margin worth of space between them", () => {
-      const state = prepareCircuitState(groversAlgorithm, STANADARD_WINDOW);
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
       const { wires } = getCircuitLayout(state);
       for (let i = 1; i < wires.length; i += 1) {
         expect(wires[i].top - wires[i - 1].top).toBeGreaterThanOrEqual(
@@ -90,7 +90,7 @@ describe('getCircuitLayout', () => {
 
   describe('gate layout', () => {
     it('lays out gates such that no gate overlaps with another gate', () => {
-      const state = prepareCircuitState(groversAlgorithm, STANADARD_WINDOW);
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
       const { gates } = getCircuitLayout(state);
       gates.sort((a, b) => a.left - b.left);
       for (let i = 0; i < gates.length; i += 1) {
@@ -103,7 +103,7 @@ describe('getCircuitLayout', () => {
     });
 
     it("lays out gates such that they cover all the qubit wires they're supposed to", () => {
-      const state = prepareCircuitState(groversAlgorithm, STANADARD_WINDOW);
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
       const { gates, wires } = getCircuitLayout(state);
       for (let i = 0; i < gates.length; i += 1) {
         const gate = gates[i];
