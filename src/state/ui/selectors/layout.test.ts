@@ -29,7 +29,8 @@ const COLLISIONS: { [key: number]: string } = {
   8: 'BOTTOM RIGHT CORNER',
   10: 'RIGHT SIDE',
   12: 'BOTTOM SIDE',
-  15: 'COMPLETELY COVERED'
+  15: 'COMPLETELY COVERED',
+  16: 'COMPLETELY COVERING'
 };
 
 const boundingBoxOverlap = (a: BoundingBox, b: BoundingBox): string => {
@@ -50,14 +51,110 @@ const boundingBoxOverlap = (a: BoundingBox, b: BoundingBox): string => {
   const leftInB = aBB.left >= bBB.left && aBB.left <= bBB.right;
 
   let collisionMask = 0;
-  if (leftInB && topInB) collisionMask = collisionMask & 1;
-  if (rightInB && topInB) collisionMask = collisionMask & 2;
-  if (leftInB && bottomInB) collisionMask = collisionMask & 4;
-  if (rightInB && bottomInB) collisionMask = collisionMask & 8;
+  if (leftInB && topInB) collisionMask = collisionMask | 1;
+  if (rightInB && topInB) collisionMask = collisionMask | 2;
+  if (leftInB && bottomInB) collisionMask = collisionMask | 4;
+  if (rightInB && bottomInB) collisionMask = collisionMask | 8;
+  if (
+    aBB.top < bBB.top &&
+    aBB.bottom > bBB.bottom &&
+    aBB.left < bBB.left &&
+    aBB.right > bBB.right
+  ) {
+    collisionMask = 16;
+  }
+
   return COLLISIONS[collisionMask];
 };
 
-const rayBoxIntersection = (ray: number, box: BoundingBox) => {
+describe('boundingBoxOverlap', () => {
+  it('detects overlaps correctly', () => {
+    const boxA = {
+      top: 50,
+      left: 50,
+      height: 50,
+      width: 50
+    };
+
+    const collisions: { [key: string]: BoundingBox } = {
+      'NO COLLISION': {
+        top: 150,
+        left: 150,
+        height: 50,
+        width: 50
+      },
+      'TOP LEFT CORNER': {
+        top: 25,
+        left: 10,
+        height: 50,
+        width: 50
+      },
+      'TOP RIGHT CORNER': {
+        top: 25,
+        left: 80,
+        height: 50,
+        width: 50
+      },
+      'TOP SIDE': {
+        top: 25,
+        left: 50,
+        height: 50,
+        width: 50
+      },
+      'BOTTOM LEFT CORNER': {
+        top: 80,
+        left: 20,
+        height: 50,
+        width: 50
+      },
+      'LEFT SIDE': {
+        top: 50,
+        left: 25,
+        height: 50,
+        width: 50
+      },
+      'BOTTOM RIGHT CORNER': {
+        top: 80,
+        left: 80,
+        height: 50,
+        width: 50
+      },
+      'RIGHT SIDE': {
+        top: 50,
+        left: 80,
+        height: 50,
+        width: 50
+      },
+      'BOTTOM SIDE': {
+        top: 80,
+        left: 50,
+        height: 50,
+        width: 50
+      },
+      'COMPLETELY COVERED': {
+        top: 0,
+        left: 0,
+        height: 200,
+        width: 200
+      },
+      'COMPLETELY COVERING': {
+        top: 75,
+        left: 75,
+        height: 10,
+        width: 10
+      }
+    };
+
+    const cases = Object.keys(collisions);
+    for (let i = 0; i < cases.length; i += 1) {
+      const collisionCase = cases[i];
+      const caseBox = collisions[collisionCase];
+      expect(boundingBoxOverlap(boxA, caseBox)).toEqual(collisionCase);
+    }
+  });
+});
+
+const horizontalRayBoxIntersection = (ray: number, box: BoundingBox) => {
   return ray >= box.top && ray <= box.top + box.height;
 };
 
@@ -114,7 +211,7 @@ describe('getCircuitLayout', () => {
       for (let i = 0; i < gates.length; i += 1) {
         const a = gates[i];
         for (let j = i + 1; j < gates.length; j += 1) {
-          const b = gates[i];
+          const b = gates[j];
           expect(boundingBoxOverlap(a, b)).toEqual('NO COLLISION');
         }
       }
@@ -127,7 +224,7 @@ describe('getCircuitLayout', () => {
         const gate = gates[i];
         for (let j = 0; j < gate.qubits.length; j += 1) {
           const wire = wires[gate.qubits[j]];
-          expect(rayBoxIntersection(wire.top, gate)).toBeTruthy();
+          expect(horizontalRayBoxIntersection(wire.top, gate)).toBeTruthy();
         }
       }
     });

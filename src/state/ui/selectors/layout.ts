@@ -102,7 +102,7 @@ const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLa
     []
   );
 
-  return columns.reduce(
+  const laidOut = columns.reduce(
     (gates: GateLayout[], column: GateColumn, columnIndex: number): GateLayout[] => {
       const newGates = [];
       for (let i = 0; i < column.gates.length; i += 1) {
@@ -137,6 +137,8 @@ const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLa
     },
     []
   );
+
+  return laidOut;
 };
 
 export const getCircuitLayout = createSelector(
