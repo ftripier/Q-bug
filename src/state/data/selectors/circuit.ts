@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { AppState } from '../../types';
 import { CIRCUIT_INSTRUCTION_TYPES } from '../reducers/circuit';
+import { CircuitGate } from '../types';
 
 export const getCircuit = (state: AppState) => state.data.circuit;
 
@@ -20,6 +21,18 @@ export const reduceNumberOfQubits = (circuit: any[]) => {
       })
   );
   return maxQubits + 1;
+};
+
+export const isSparse = (gate: CircuitGate) => {
+  const { qubits } = gate;
+
+  for (let i = 1; i < qubits.length; i += 1) {
+    const qubit = qubits[i];
+    if (qubits[i - 1] != qubit - 1) {
+      return true;
+    }
+  }
+  return false;
 };
 
 export const getGates = createSelector(
