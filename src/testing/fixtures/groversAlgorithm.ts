@@ -1,6 +1,6 @@
 import quilToJSON from 'quil-json-js';
 
-const GroversQuilSource = `DEFGATE GROVER_ORACLE:
+export const GroversQuilSource = `DEFGATE GROVER_ORACLE:
     1.0, 0, 0, 0, 0, 0, 0, 0
     0, 1.0, 0, 0, 0, 0, 0, 0
     0, 0, -1.0, 0, 0, 0, 0, 0

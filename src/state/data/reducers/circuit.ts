@@ -3,7 +3,8 @@ import { SET_CIRCUIT_STATE } from '../../constants';
 
 export const CIRCUIT_INSTRUCTION_TYPES = {
   DEFGATE: 'DEFGATE',
-  GATE: 'GATE'
+  GATE: 'GATE',
+  EXPRESSION: 'EXPRESSION'
 };
 
 export default function circuitReducer(state = [], action: Action) {

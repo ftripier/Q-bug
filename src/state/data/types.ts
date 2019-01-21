@@ -8,3 +8,8 @@ export interface CircuitGate {
   params?: number[];
   qubits: number[];
 }
+
+export interface Expression {
+  type: 'EXPRESSION';
+  expression: string;
+}

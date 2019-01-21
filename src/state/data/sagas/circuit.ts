@@ -5,6 +5,8 @@ import { INITIALIZE_APPLICATION } from '../../constants';
 import { createSocketConnection } from '../../../api/socket';
 import { setCircuitState } from '../../actionCreators';
 import { CIRCUIT_INSTRUCTION_TYPES } from '../reducers/circuit';
+import math from 'mathjs';
+import { Expression } from '../types';
 
 function createSocketChannel(socket: WebSocket) {
   return eventChannel(emit => {
@@ -25,9 +27,21 @@ function sortQubits(circuit: any[]) {
   gates.forEach(gate => gate.qubits.sort());
 }
 
+function parseGateDefExpressions(circuit: any[]) {
+  const gateDefs = circuit.filter(instr => instr.type == CIRCUIT_INSTRUCTION_TYPES.DEFGATE);
+  gateDefs.forEach(gateDef => {
+    const { matrix } = gateDef;
+    const parsedExpressions = matrix.map((row: Expression[]) =>
+      row.map(component => math.eval(component.expression))
+    );
+    gateDef.matrix = math.matrix(parsedExpressions);
+  });
+}
+
 function* processNewCircuit(payload: any) {
   const converted = yield call(quilToJSON, payload);
   sortQubits(converted);
+  parseGateDefExpressions(converted);
   yield put(setCircuitState(converted));
 }
 
