@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { getCircuit } from '../../data/selectors/circuit';
+import { getCircuit, getNumberOfQubits } from '../../data/selectors/circuit';
 import circuitLayoutConfig from '../../../components/circuit/circuitLayoutConfig';
 import { CIRCUIT_INSTRUCTION_TYPES } from '../../data/reducers/circuit';
 import { AppState } from '../../types';
@@ -12,18 +12,6 @@ export const getWindowSize = createSelector(
   getLayoutState,
   ({ windowSize }) => windowSize
 );
-
-const getNumberOfQubits = (circuit: any[]) => {
-  let maxQubits = 0;
-  circuit.forEach(
-    gate =>
-      gate.qubits &&
-      gate.qubits.forEach((qubit: number) => {
-        maxQubits = Math.max(maxQubits, qubit);
-      })
-  );
-  return maxQubits + 1;
-};
 
 const getWiresLayout = (windowSize: number[], numberOfQubits: number): WireLayout[] => {
   const { padding, wire } = circuitLayoutConfig;
@@ -142,9 +130,8 @@ const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLa
 };
 
 export const getCircuitLayout = createSelector(
-  [getWindowSize, getCircuit],
-  (windowSize, circuit) => {
-    const numberOfQubits = getNumberOfQubits(circuit);
+  [getWindowSize, getCircuit, getNumberOfQubits],
+  (windowSize, circuit, numberOfQubits) => {
     const wires = getWiresLayout(windowSize, numberOfQubits);
     const gateInstrs = circuit.filter(({ type }) => type === CIRCUIT_INSTRUCTION_TYPES.GATE);
     const gates = getGatesLayout(wires, gateInstrs);

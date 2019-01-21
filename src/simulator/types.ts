@@ -1,9 +1,9 @@
 import { CircuitGate } from '../state/data/types';
+import { Matrix } from 'mathjs';
 
-// TODO: use the math.js types
-type MixedState = number[][];
+type MixedState = Matrix;
 
 interface Simulator {
   applyGate(gate: CircuitGate): void;
-  getWavefunctionForQubit(qubit: number): MixedState;
+  getProbablityZeroForQubit(qubit: number): number;
 }
