@@ -1,7 +1,6 @@
-import { CircuitGate } from '../state/data/types';
+import { GateWithMask } from '../state/data/types';
 import math, { Matrix } from 'mathjs';
 import standardGates from './standardGates';
-import { isSparse } from '../state/data/selectors/circuit';
 
 const { PROJECT_TO_ZERO, SWAP } = standardGates;
 
@@ -143,14 +142,10 @@ function sparseLiftedGateMatrix(matrix: Matrix, qubits: number[], n: number): Ma
   ) as Matrix;
 }
 
-function liftedGateMatrix(gate: CircuitGate, n: number): Matrix {
-  const { name, qubits } = gate;
-  // TODO: derive gate state from redux and look up matrix from gate def
-  let matrix = standardGates[name];
-  if (!matrix) {
-    throw new Error(' NEED TO IMPLEMENT DEFGATE LOOKUP');
-  }
-  if (isSparse(gate)) {
+function liftedGateMatrix(gate: GateWithMask, n: number): Matrix {
+  let { qubits, matrix, sparse } = gate;
+
+  if (sparse) {
     matrix = sparseLiftedGateMatrix(matrix, qubits, n);
   } else {
     matrix = adjacentLiftedGateMatrix(matrix, qubits[0], n);
@@ -175,7 +170,7 @@ export default class Simulator {
     this.state.set([0, 0], 1);
   }
 
-  applyGate(gate: CircuitGate) {
+  applyGate(gate: GateWithMask) {
     const gateMatrix = liftedGateMatrix(gate, this.n);
     this.state = math.multiply(
       math.multiply(gateMatrix, this.state),

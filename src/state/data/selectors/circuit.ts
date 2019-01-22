@@ -1,9 +1,17 @@
 import { createSelector } from 'reselect';
 import { AppState } from '../../types';
 import { CIRCUIT_INSTRUCTION_TYPES } from '../reducers/circuit';
-import { CircuitGate, CircuitGateDef, GateWithMatrix, GateColumn, GateWithMask } from '../types';
+import {
+  CircuitGate,
+  CircuitGateDef,
+  GateWithMatrix,
+  GateColumn,
+  GateWithMask,
+  WireSegment
+} from '../types';
 import { Matrix } from 'mathjs';
 import standardGates from '../../../simulator/standardGates';
+import Simulator from '../../../simulator/simulator';
 
 export const getCircuit = (state: AppState) => state.data.circuit;
 
@@ -105,4 +113,34 @@ export const getGateColumns = createSelector(
 export const getNumberOfQubits = createSelector(
   getCircuit,
   reduceNumberOfQubits
+);
+
+export const getWireSegments = createSelector(
+  [getGateColumns, getNumberOfQubits],
+  (gateColumns: GateColumn[], n: number): WireSegment[][] => {
+    const wireSegments = [] as WireSegment[][];
+    for (let i = 0; i < n; i += 1) {
+      wireSegments.push([]);
+    }
+    const simulator = new Simulator(n);
+    for (let i = 0; i < gateColumns.length; i += 1) {
+      // keep track of which qubits were affected
+      const { gates, wireMask } = gateColumns[i];
+      // simulate all gates in a column
+      gates.forEach(gate => {
+        simulator.applyGate(gate);
+      });
+      // for each qubit affected, push the qubits probability into the result array at the qubit's index
+      for (let j = 0; j < n; j += 1) {
+        if (wireMask & (1 << j)) {
+          wireSegments[j].push({
+            probabilityZero: simulator.getProbablityZeroForQubit(j),
+            qubit: j
+          });
+        }
+      }
+    }
+
+    return wireSegments;
+  }
 );

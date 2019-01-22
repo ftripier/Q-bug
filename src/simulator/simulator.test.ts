@@ -1,4 +1,5 @@
 import Simulator from './simulator';
+import standardGates from './standardGates';
 
 describe('Simulator', () => {
   it('has probability = 1 of measuring zero for all qubits initially', () => {
@@ -15,14 +16,20 @@ describe('Simulator', () => {
     simulator.applyGate({
       type: 'GATE',
       name: 'H',
-      qubits: [0]
+      qubits: [0],
+      matrix: standardGates['H'],
+      sparse: false,
+      wireMask: 1
     });
     expect(simulator.getProbablityZeroForQubit(0)).toBeCloseTo(1 / 2);
 
     simulator.applyGate({
       type: 'GATE',
       name: 'H',
-      qubits: [1]
+      qubits: [1],
+      matrix: standardGates['H'],
+      sparse: false,
+      wireMask: 1
     });
     expect(simulator.getProbablityZeroForQubit(0)).toBeCloseTo(1 / 2);
     expect(simulator.getProbablityZeroForQubit(1)).toBeCloseTo(1 / 2);

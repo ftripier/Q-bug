@@ -25,6 +25,11 @@ export interface GateColumn {
   wireMask: number;
 }
 
+export interface WireSegment {
+  probabilityZero: number;
+  qubit: number;
+}
+
 export interface CircuitGateDef {
   type: 'DEFGATE';
   name: string;
