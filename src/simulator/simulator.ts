@@ -178,8 +178,8 @@ export default class Simulator {
   applyGate(gate: CircuitGate) {
     const gateMatrix = liftedGateMatrix(gate, this.n);
     this.state = math.multiply(
-      ctranspose(this.state),
-      math.multiply(this.state, gateMatrix)
+      math.multiply(gateMatrix, this.state),
+      ctranspose(gateMatrix)
     ) as Matrix;
   }
 
