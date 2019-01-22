@@ -11,7 +11,6 @@ describe('Simulator', () => {
   });
 
   it('returns the correct probabilities after a hadamard gate has been applied to a qubit', () => {
-    // TODO: validate this test, then redo the dataflow to put qubit and matrix info on a gate earlier in pipeline
     const simulator = new Simulator(2);
     simulator.applyGate({
       type: 'GATE',

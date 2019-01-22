@@ -170,11 +170,6 @@ describe('getCircuitLayout', () => {
     expect(getCircuitLayout(prepareCircuitState(groversAlgorithm, STANDARD_WINDOW))).toBeTruthy();
   });
 
-  it('returns the number of qubits in the circuit', () => {
-    const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
-    expect(getCircuitLayout(state).numberOfQubits).toBe(3);
-  });
-
   describe('wire layout', () => {
     it('lays out the middle wire in the center of the window for an uneven amount of qubits', () => {
       const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);

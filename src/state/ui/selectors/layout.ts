@@ -1,10 +1,9 @@
 import { createSelector } from 'reselect';
-import { getCircuit, getNumberOfQubits } from '../../data/selectors/circuit';
+import { getNumberOfQubits, getGateColumns } from '../../data/selectors/circuit';
 import circuitLayoutConfig from '../../../components/circuit/circuitLayoutConfig';
-import { CIRCUIT_INSTRUCTION_TYPES } from '../../data/reducers/circuit';
 import { AppState } from '../../types';
 import { WireLayout, GateLayout } from '../types';
-import { CircuitGate } from '../../data/types';
+import { GateColumn } from '../../data/types';
 
 const getLayoutState = (state: AppState) => state.ui.layout;
 
@@ -42,54 +41,7 @@ const getWiresLayout = (windowSize: number[], numberOfQubits: number): WireLayou
   return wires;
 };
 
-// determines if a gate is sparse - that is, if the qubits
-// it affects don't form a continuous block
-const isSparse = (qubits: number[]): boolean => {
-  for (let i = 1; i < qubits.length; i += 1) {
-    const qubit = qubits[i];
-    if (qubits[i - 1] != qubit - 1) {
-      return true;
-    }
-  }
-  return false;
-};
-
-interface GateWithMask extends CircuitGate {
-  wireMask: number;
-}
-
-interface GateColumn {
-  gates: GateWithMask[];
-  wireMask: number;
-}
-
-const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLayout[] => {
-  const gateWithMasks = gates.map(gate => ({
-    ...gate,
-    wireMask: gate.qubits.reduce((mask, qubit) => mask | (1 << qubit), 0)
-  }));
-  // Here we fold over gates, keeping a track over which wires are occupied by a
-  // gate. Once all wires on a given column are occupied, we find a new column to add the gate to.
-  //
-  // Right now, we use bitmasks to represent which wires are occupied (a 1 in the qubit wire's column)
-  // which means if anyone tries to use more than 32 qubits, this algorithm blows up.
-  // Thankfully, simulating 32 qubits is too much for the simulator anyways.
-  const columns = gateWithMasks.reduce(
-    (columns: GateColumn[], gate: GateWithMask): GateColumn[] => {
-      const { wireMask } = gate;
-      const columnThatGateFitsInto = columns.find(
-        ({ wireMask: columnWireMask }) => !(columnWireMask & wireMask)
-      );
-      if (!columnThatGateFitsInto) {
-        return columns.concat({ gates: [gate], wireMask });
-      }
-      columnThatGateFitsInto.gates.push(gate);
-      columnThatGateFitsInto.wireMask = columnThatGateFitsInto.wireMask | wireMask;
-      return columns;
-    },
-    []
-  );
-
+const getGatesLayout = (wiresLayout: WireLayout[], columns: GateColumn[]): GateLayout[] => {
   const laidOut = columns.reduce(
     (gates: GateLayout[], column: GateColumn, columnIndex: number): GateLayout[] => {
       const newGates = [];
@@ -98,10 +50,10 @@ const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLa
         const left =
           (columnIndex + 1) * circuitLayoutConfig.gate.margin.left +
           columnIndex * circuitLayoutConfig.gate.width;
-        const sparse = isSparse(gate.qubits);
+
         let top = 0;
         let height = 0;
-        if (sparse) {
+        if (gate.sparse) {
           const bottomQubit = gate.qubits[gate.qubits.length - 1];
           top = wiresLayout[bottomQubit].top - (circuitLayoutConfig.wire.height >> 1);
           height = circuitLayoutConfig.wire.height;
@@ -117,8 +69,7 @@ const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLa
           top,
           left,
           width: circuitLayoutConfig.gate.width,
-          height,
-          sparse
+          height
         });
       }
       return gates.concat(newGates);
@@ -130,13 +81,11 @@ const getGatesLayout = (wiresLayout: WireLayout[], gates: CircuitGate[]): GateLa
 };
 
 export const getCircuitLayout = createSelector(
-  [getWindowSize, getCircuit, getNumberOfQubits],
-  (windowSize, circuit, numberOfQubits) => {
+  [getWindowSize, getGateColumns, getNumberOfQubits],
+  (windowSize, gateColumns, numberOfQubits) => {
     const wires = getWiresLayout(windowSize, numberOfQubits);
-    const gateInstrs = circuit.filter(({ type }) => type === CIRCUIT_INSTRUCTION_TYPES.GATE);
-    const gates = getGatesLayout(wires, gateInstrs);
+    const gates = getGatesLayout(wires, gateColumns);
     return {
-      numberOfQubits,
       wires,
       gates
     };
