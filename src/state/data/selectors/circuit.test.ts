@@ -5,7 +5,8 @@ import {
   getGateDefMatrices,
   getGatesWithMatrices,
   getGateColumns,
-  getNumberOfQubits
+  getNumberOfQubits,
+  getWireSegments
 } from './circuit';
 import { expectSaga } from 'redux-saga-test-plan';
 import readCircuitSaga from '../sagas/circuit';
@@ -101,5 +102,25 @@ describe('getNumberOfQubits', () => {
   it('should return the number total number of qubits affected in the circuit', async () => {
     const state = await createCircuitState(GroversQuilSource);
     expect(getNumberOfQubits(state)).toEqual(3);
+  });
+});
+
+describe('getWireSegments', () => {
+  it("should return the correct probabilities for each wire segment in the grover's algorithm circuit", async () => {
+    const state = await createCircuitState(GroversQuilSource);
+    const wireSegments = getWireSegments(state);
+    const numberOfQubits = getNumberOfQubits(state);
+    const columns = getGateColumns(state);
+
+    expect(wireSegments.length).toEqual(numberOfQubits);
+    for (let i = 0; i < wireSegments.length; i += 1) {
+      const qubitWires = wireSegments[i];
+      expect(qubitWires.length).toEqual(columns.length);
+      if (i === wireSegments.length >> 1) {
+        expect(qubitWires[qubitWires.length - 1].probabilityZero).toBeLessThanOrEqual(0.1);
+      } else {
+        expect(qubitWires[qubitWires.length - 1].probabilityZero).toBeGreaterThanOrEqual(0.9);
+      }
+    }
   });
 });
