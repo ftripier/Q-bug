@@ -1,7 +1,9 @@
 import { Matrix } from 'mathjs';
 
+export type circuit = any[];
+
 export interface DataState {
-  circuit: any[];
+  circuit: circuit;
 }
 
 export interface CircuitGate {

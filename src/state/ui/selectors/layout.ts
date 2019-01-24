@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
-import { getNumberOfQubits, getGateColumns } from '../../data/selectors/circuit';
+import { getNumberOfQubits, getGateColumns, getWireSegments } from '../../data/selectors/circuit';
 import circuitLayoutConfig from '../../../components/circuit/circuitLayoutConfig';
 import { AppState } from '../../types';
 import { WireLayout, GateLayout } from '../types';
-import { GateColumn } from '../../data/types';
+import { GateColumn, WireSegment } from '../../data/types';
 
 const getLayoutState = (state: AppState) => state.ui.layout;
 
@@ -80,11 +80,21 @@ const getGatesLayout = (wiresLayout: WireLayout[], columns: GateColumn[]): GateL
   return laidOut;
 };
 
+const getWireSegmentsLayout = (
+  wireSegmentState: WireSegment[][],
+  wires: WireLayout[],
+  gateColumns: GateLayout[]
+) => {
+  // for each qubit wire, lay out a wire until it intersects the next gate
+  // first wire segment is the ground wire
+};
+
 export const getCircuitLayout = createSelector(
-  [getWindowSize, getGateColumns, getNumberOfQubits],
-  (windowSize, gateColumns, numberOfQubits) => {
+  [getWindowSize, getGateColumns, getNumberOfQubits, getWireSegments],
+  (windowSize, gateColumns, numberOfQubits, wireSegmentState) => {
     const wires = getWiresLayout(windowSize, numberOfQubits);
     const gates = getGatesLayout(wires, gateColumns);
+    const wireSegments = getWireSegmentsLayout(wireSegmentState, wires, gates);
     return {
       wires,
       gates

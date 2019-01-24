@@ -7,7 +7,8 @@ import {
   GateWithMatrix,
   GateColumn,
   GateWithMask,
-  WireSegment
+  WireSegment,
+  circuit
 } from '../types';
 import { Matrix } from 'mathjs';
 import standardGates from '../../../simulator/standardGates';
@@ -15,13 +16,13 @@ import Simulator from '../../../simulator/simulator';
 
 export const getCircuit = (state: AppState) => state.data.circuit;
 
-export const filterGates = (circuit: any[]) =>
+export const filterGates = (circuit: circuit) =>
   circuit.filter(instr => instr.type === CIRCUIT_INSTRUCTION_TYPES.GATE);
 
-export const filterDefGates = (circuit: any[]) =>
+export const filterDefGates = (circuit: circuit) =>
   circuit.filter(inst => inst.type === CIRCUIT_INSTRUCTION_TYPES.DEFGATE);
 
-export const reduceNumberOfQubits = (circuit: any[]) => {
+export const reduceNumberOfQubits = (circuit: circuit) => {
   let maxQubits = 0;
   circuit.forEach(
     gate =>
@@ -123,6 +124,9 @@ export const getWireSegments = createSelector(
       wireSegments.push([]);
     }
     const simulator = new Simulator(n);
+    for (let i = 0; i < n; i += 1) {
+      wireSegments[i].push({ probabilityZero: 0, qubit: i });
+    }
     for (let i = 0; i < gateColumns.length; i += 1) {
       // keep track of which qubits were affected
       const { gates, wireMask } = gateColumns[i];

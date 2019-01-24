@@ -3,10 +3,11 @@ import rootReducer, { initialState } from '../../reducer';
 import circuitLayoutConfig from '../../../components/circuit/circuitLayoutConfig';
 import { setCircuitState, setWindowSize } from '../../actionCreators';
 import { getCircuitLayout, getWindowSize } from './layout';
+import { circuit } from '../../data/types';
 
 const STANDARD_WINDOW = [1440, 600];
 
-const prepareCircuitState = (circuit: any[], size: number[]) => {
+const prepareCircuitState = (circuit: circuit, size: number[]) => {
   let state = rootReducer(initialState, setCircuitState(circuit));
   state = rootReducer(state, setWindowSize(size));
   return state;

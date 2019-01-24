@@ -1,4 +1,4 @@
-import quilToJSON from 'quil-json-js';
+import { parseQuilProgram } from '../../api/circuits';
 
 export const GroversQuilSource = `DEFGATE GROVER_ORACLE:
     1.0, 0, 0, 0, 0, 0, 0, 0
@@ -40,4 +40,4 @@ H 0
 H 1
 H 2`;
 
-export default quilToJSON(GroversQuilSource);
+export default parseQuilProgram(GroversQuilSource);
