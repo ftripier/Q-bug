@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { getNumberOfQubits, getGateColumns, getWireSegments } from '../../data/selectors/circuit';
 import circuitLayoutConfig from '../../../components/circuit/circuitLayoutConfig';
 import { AppState } from '../../types';
-import { WireLayout, GateLayout } from '../types';
+import { WireLayout, GateLayout, WireSegmentLayout } from '../types';
 import { GateColumn, WireSegment } from '../../data/types';
 
 const getLayoutState = (state: AppState) => state.ui.layout;
@@ -35,7 +35,7 @@ const getWiresLayout = (windowSize: number[], numberOfQubits: number): WireLayou
         // ensures the wire intersects gates at the midpoint
         parityOffset,
       left: padding.left,
-      width: windowSize[0] - padding.right
+      width: windowSize[0] - padding.right - padding.left
     });
   }
   return wires;
@@ -47,7 +47,7 @@ const getGatesLayout = (wiresLayout: WireLayout[], columns: GateColumn[]): GateL
       const newGates = [];
       for (let i = 0; i < column.gates.length; i += 1) {
         const gate = column.gates[i];
-        const left =
+        let left =
           (columnIndex + 1) * circuitLayoutConfig.gate.margin.left +
           columnIndex * circuitLayoutConfig.gate.width;
 
@@ -55,11 +55,13 @@ const getGatesLayout = (wiresLayout: WireLayout[], columns: GateColumn[]): GateL
         let height = 0;
         if (gate.sparse) {
           const bottomQubit = gate.qubits[gate.qubits.length - 1];
+          left += wiresLayout[bottomQubit].left;
           top = wiresLayout[bottomQubit].top - (circuitLayoutConfig.wire.height >> 1);
           height = circuitLayoutConfig.wire.height;
         } else {
           const topQubit = gate.qubits[0];
           const bottomQubit = gate.qubits[gate.qubits.length - 1];
+          left += wiresLayout[topQubit].left;
           top = wiresLayout[topQubit].top - (circuitLayoutConfig.wire.height >> 1);
           let bottom = wiresLayout[bottomQubit].top + (circuitLayoutConfig.wire.height >> 1);
           height = bottom - top;
@@ -83,10 +85,50 @@ const getGatesLayout = (wiresLayout: WireLayout[], columns: GateColumn[]): GateL
 const getWireSegmentsLayout = (
   wireSegmentState: WireSegment[][],
   wires: WireLayout[],
-  gateColumns: GateLayout[]
+  gateLayouts: GateLayout[]
 ) => {
+  // grouping gate layouts by the qubit wires they reside on
+  const qubitGates = [] as GateLayout[][];
+  const wireSegmentLayouts = [] as WireSegmentLayout[][];
+  for (let i = 0; i < wireSegmentState.length; i += 1) {
+    qubitGates[i] = [];
+    wireSegmentLayouts[i] = [];
+  }
+  for (let i = 0; i < gateLayouts.length; i += 1) {
+    const { wireMask } = gateLayouts[i];
+    for (let q = 0; q < wireSegmentState.length; q += 1) {
+      if (wireMask & (1 << q)) {
+        qubitGates[q].push(gateLayouts[i]);
+      }
+    }
+  }
+
   // for each qubit wire, lay out a wire until it intersects the next gate
-  // first wire segment is the ground wire
+  for (let i = 0; i < wireSegmentState.length; i += 1) {
+    const qubitWireSegments = wireSegmentState[i];
+    const gateQueue = qubitGates[i];
+    const qubitWireSegmentLayouts = wireSegmentLayouts[i];
+    const { top, left: wireLeft, width } = wires[i];
+    let left = wireLeft;
+    let right = wireLeft + width;
+    for (let j = 0; j < qubitWireSegments.length; j += 1) {
+      const wireSegment = qubitWireSegmentLayouts[j];
+      const nextGate = gateQueue.shift();
+      if (nextGate) {
+        right = nextGate.left;
+        qubitWireSegmentLayouts.push({ ...wireSegment, top, left, width: right - left });
+        left = nextGate.left + nextGate.width;
+      } else {
+        right = wireLeft + width;
+        qubitWireSegmentLayouts.push({ ...wireSegment, top, left, width: right - left });
+      }
+    }
+  }
+  const flattened = wireSegmentLayouts.reduce(
+    (flat, wireSegments) => flat.concat(wireSegments),
+    []
+  );
+  return flattened;
 };
 
 export const getCircuitLayout = createSelector(
@@ -97,7 +139,8 @@ export const getCircuitLayout = createSelector(
     const wireSegments = getWireSegmentsLayout(wireSegmentState, wires, gates);
     return {
       wires,
-      gates
+      gates,
+      wireSegments
     };
   }
 );

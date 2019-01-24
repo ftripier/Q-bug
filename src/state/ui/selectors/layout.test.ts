@@ -4,6 +4,7 @@ import circuitLayoutConfig from '../../../components/circuit/circuitLayoutConfig
 import { setCircuitState, setWindowSize } from '../../actionCreators';
 import { getCircuitLayout, getWindowSize } from './layout';
 import { circuit } from '../../data/types';
+import { WireSegmentLayout } from '../types';
 
 const STANDARD_WINDOW = [1440, 600];
 
@@ -197,6 +198,17 @@ describe('getCircuitLayout', () => {
         expect(width).toBeGreaterThanOrEqual(0);
       }
     });
+
+    it('sets the width equal to the window width minus the left and right circuit padding', () => {
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
+      const { wires } = getCircuitLayout(state);
+      for (let i = 0; i < wires.length; i += 1) {
+        const { width } = wires[i];
+        expect(width).toEqual(
+          STANDARD_WINDOW[0] - circuitLayoutConfig.padding.left - circuitLayoutConfig.padding.right
+        );
+      }
+    });
   });
 
   describe('gate layout', () => {
@@ -234,6 +246,58 @@ describe('getCircuitLayout', () => {
         expect(left).toBeGreaterThanOrEqual(0);
         expect(width).toBeGreaterThanOrEqual(0);
         expect(height).toBeGreaterThanOrEqual(0);
+      }
+    });
+
+    it('lays out all gates in between the start and end of the top wire, obeying gate margins', () => {
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
+      const { gates, wires } = getCircuitLayout(state);
+      const [topWire] = wires;
+      for (let i = 0; i < gates.length; i += 1) {
+        const { left, width } = gates[i];
+        expect(left).toBeGreaterThanOrEqual(topWire.left + circuitLayoutConfig.gate.margin.left);
+        expect(left + width).toBeLessThanOrEqual(topWire.left + topWire.width);
+      }
+    });
+  });
+
+  describe('wire segment layout', () => {
+    const wireSegmentAt = (
+      wireSegments: WireSegmentLayout[],
+      to: number,
+      topGreaterThan: number,
+      topLessThan: number
+    ) => {
+      for (let i = 0; i < wireSegments.length; i += 1) {
+        const { left, width, top } = wireSegments[i];
+        if (left + width === to) {
+          if (top < topLessThan && top > topGreaterThan) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    it('connects every gate with a wire segment', () => {
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
+      const { gates, wireSegments } = getCircuitLayout(state);
+      wireSegments.sort((a, b) => a.left - b.left);
+      gates.sort((a, b) => a.left - b.left);
+
+      for (let i = 0; i < gates.length; i += 1) {
+        const { left, top, height } = gates[i];
+        expect(wireSegmentAt(wireSegments, left, top, top + height)).toBeTruthy();
+      }
+    });
+
+    it('lays out a wire segment at the end of every wire', () => {
+      const state = prepareCircuitState(groversAlgorithm, STANDARD_WINDOW);
+      const { wireSegments, wires } = getCircuitLayout(state);
+
+      for (let i = 0; i < wires.length; i += 1) {
+        const { left, top, width } = wires[i];
+        expect(wireSegmentAt(wireSegments, left + width, top - 1, top + 1));
       }
     });
   });

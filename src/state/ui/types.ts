@@ -1,4 +1,4 @@
-import { CircuitGate } from '../data/types';
+import { GateWithMask, WireSegment } from '../data/types';
 
 export interface UIState {
   layout: {
@@ -12,10 +12,16 @@ export interface WireLayout {
   width: number;
 }
 
-export interface GateLayout extends CircuitGate {
+export interface GateLayout extends GateWithMask {
   top: number;
   left: number;
   width: number;
   height: number;
   sparse: boolean;
+}
+
+export interface WireSegmentLayout extends WireSegment {
+  top: number;
+  left: number;
+  width: number;
 }
