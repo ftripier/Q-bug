@@ -125,7 +125,7 @@ export const getWireSegments = createSelector(
     }
     const simulator = new Simulator(n);
     for (let i = 0; i < n; i += 1) {
-      wireSegments[i].push({ probabilityZero: 0, qubit: i });
+      wireSegments[i].push({ probabilityZero: 1, qubit: i });
     }
     for (let i = 0; i < gateColumns.length; i += 1) {
       // keep track of which qubits were affected

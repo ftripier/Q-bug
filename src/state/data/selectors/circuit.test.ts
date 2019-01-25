@@ -101,7 +101,7 @@ describe('getWireSegments', () => {
       const qubitWires = wireSegments[i];
       // equal to the amount of columns (in grovers, all of which are dense) plus the initial wire segment
       expect(qubitWires.length).toEqual(columns.length + 1);
-      expect(qubitWires[0].probabilityZero).toBe(0);
+      expect(qubitWires[0].probabilityZero).toBe(1);
       if (i === wireSegments.length >> 1) {
         expect(qubitWires[qubitWires.length - 1].probabilityZero).toBeLessThanOrEqual(0.1);
       } else {

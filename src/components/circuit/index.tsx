@@ -17,8 +17,13 @@ export function StatelessCircuit({
   return (
     <div className="circuit-canvas">
       <div className="circuit-wire-layer">
-        {wireSegments.map(({ width, top, left }, i) => (
-          <WireSegment key={i} position={[left, top]} width={width} />
+        {wireSegments.map(({ width, top, left, probabilityZero }, i) => (
+          <WireSegment
+            key={i}
+            position={[left, top]}
+            width={width}
+            probabilityZero={probabilityZero}
+          />
         ))}
       </div>
       <div className="circuit-gate-layer">

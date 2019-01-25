@@ -112,7 +112,7 @@ const getWireSegmentsLayout = (
     let left = wireLeft;
     let right = wireLeft + width;
     for (let j = 0; j < qubitWireSegments.length; j += 1) {
-      const wireSegment = qubitWireSegmentLayouts[j];
+      const wireSegment = qubitWireSegments[j];
       const nextGate = gateQueue.shift();
       if (nextGate) {
         right = nextGate.left;
