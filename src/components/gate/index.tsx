@@ -1,7 +1,7 @@
 import './index.css';
 import React from 'react';
 
-export default function Gate({
+export default React.memo(function Gate({
   name,
   position,
   size
@@ -22,4 +22,4 @@ export default function Gate({
       <div className="circuit-gate-label">{name}</div>
     </div>
   );
-}
+});

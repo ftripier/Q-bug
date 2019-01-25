@@ -12,7 +12,7 @@ function injectBlurStyles(probabilityZero: number) {
   };
 }
 
-export default function WireSegment({
+export default React.memo(function WireSegment({
   position,
   width,
   probabilityZero
@@ -31,4 +31,4 @@ export default function WireSegment({
       }}
     />
   );
-}
+});

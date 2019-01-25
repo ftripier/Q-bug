@@ -7,14 +7,8 @@ import { GateLayout, WireSegmentLayout } from '../../state/ui/types';
 import { getCircuitLayout, getWindowSize } from '../../state/ui/selectors/layout';
 import { AppState } from '../../state/types';
 
-export function StatelessCircuit({
-  gates,
-  wireSegments
-}: {
-  gates: GateLayout[];
-  wireSegments: WireSegmentLayout[];
-}) {
-  return (
+export const StatelessCircuit = React.memo(
+  ({ gates, wireSegments }: { gates: GateLayout[]; wireSegments: WireSegmentLayout[] }) => (
     <div className="circuit-canvas">
       <div className="circuit-wire-layer">
         {wireSegments.map(({ width, top, left, probabilityZero }, i) => (
@@ -32,8 +26,8 @@ export function StatelessCircuit({
         ))}
       </div>
     </div>
-  );
-}
+  )
+);
 
 const mapStateToProps = (state: AppState) => {
   const { wireSegments, gates } = getCircuitLayout(state);
