@@ -2,6 +2,7 @@ import './index.css';
 import { connect } from 'react-redux';
 import React from 'react';
 import { Dispatch } from 'redux';
+import { CSSTransitionGroup } from 'react-transition-group';
 import { openWireSegmentTooltip, closeWireSegmentTooltip } from '../../state/actionCreators';
 import { WireSegmentID } from '../../state/data/types';
 import { AppState } from '../../state/types';
@@ -53,13 +54,19 @@ export const StatelessWireSegment = React.memo(
           style={{ ...injectBlurStyles(probabilityZero) }}
         />
       </div>
-      {tooltipIsOpen && (
-        <WireSegmentTooltip
-          top={position[1]}
-          left={position[0]}
-          probabilityZero={probabilityZero}
-        />
-      )}
+      <CSSTransitionGroup
+        transitionName="tooltip"
+        transitionEnterTimeout={300}
+        transitionLeaveTimeout={300}
+      >
+        {tooltipIsOpen && (
+          <WireSegmentTooltip
+            top={position[1]}
+            left={position[0]}
+            probabilityZero={probabilityZero}
+          />
+        )}
+      </CSSTransitionGroup>
     </React.Fragment>
   )
 );

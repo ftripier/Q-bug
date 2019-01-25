@@ -11,3 +11,25 @@
   height: 0;
   width: 100%;
 }
+
+.tooltip-enter {
+  opacity: 0.01;
+  transform: scaleY(0.88);
+}
+
+.tooltip-enter.tooltip-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in, transform 300ms ease-out;
+  transform: scaleY(1);
+}
+
+.tooltip-leave {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.tooltip-leave.tooltip-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in, transform 300ms ease-out;
+  transform: scaleY(0.88);
+}
