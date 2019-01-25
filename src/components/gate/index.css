@@ -2,12 +2,20 @@
   position: absolute;
   border: 1px solid #414a4c;
   display: flex;
-  justify-content: center;
   align-items: center;
+  overflow: hidden;
+  margin: auto;
+  padding-left: 6px;
+  padding-right: 6px;
+  box-sizing: border-box;
+  background: white;
+  word-break: break-all;
 }
 
 .circuit-gate-label {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #414a4c;
   font-size: 1.33rem;
+  width: 100%;
+  text-align: center;
 }
