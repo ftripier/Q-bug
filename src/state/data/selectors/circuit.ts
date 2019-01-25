@@ -8,7 +8,8 @@ import {
   GateColumn,
   GateWithMask,
   WireSegment,
-  circuit
+  circuit,
+  WireSegmentID
 } from '../types';
 import { Matrix } from 'mathjs';
 import standardGates from '../../../simulator/standardGates';
@@ -78,6 +79,8 @@ export const getGatesWithMatrices = createSelector(
     }))
 );
 
+const gateID = (qubits: number, column: number) => `${qubits}-${column}`;
+
 export const getGateColumns = createSelector(
   getGatesWithMatrices,
   (gates: GateWithMatrix[]): GateColumn[] => {
@@ -94,13 +97,20 @@ export const getGateColumns = createSelector(
     const columns = gateWithMasks.reduce(
       (columns: GateColumn[], gate: GateWithMask): GateColumn[] => {
         const { wireMask } = gate;
-        const columnThatGateFitsInto = columns.find(
+        const columnThatGateFitsIntoIndex = columns.findIndex(
           ({ wireMask: columnWireMask }) => !(columnWireMask & wireMask)
         );
-        if (!columnThatGateFitsInto) {
-          return columns.concat({ gates: [gate], wireMask });
+        if (columnThatGateFitsIntoIndex === -1) {
+          return columns.concat({
+            gates: [{ ...gate, id: gateID(wireMask, columns.length) }],
+            wireMask
+          });
         }
-        columnThatGateFitsInto.gates.push(gate);
+        const columnThatGateFitsInto = columns[columnThatGateFitsIntoIndex];
+        columnThatGateFitsInto.gates.push({
+          ...gate,
+          id: gateID(wireMask, columnThatGateFitsIntoIndex)
+        });
         columnThatGateFitsInto.wireMask = columnThatGateFitsInto.wireMask | wireMask;
         return columns;
       },
@@ -116,6 +126,9 @@ export const getNumberOfQubits = createSelector(
   reduceNumberOfQubits
 );
 
+const wireSegmentID = (qubit: number, fromColumn: number, toColumn: number): WireSegmentID =>
+  `${qubit}-${fromColumn}-${toColumn}`;
+
 export const getWireSegments = createSelector(
   [getGateColumns, getNumberOfQubits],
   (gateColumns: GateColumn[], n: number): WireSegment[][] => {
@@ -125,7 +138,7 @@ export const getWireSegments = createSelector(
     }
     const simulator = new Simulator(n);
     for (let i = 0; i < n; i += 1) {
-      wireSegments[i].push({ probabilityZero: 1, qubit: i });
+      wireSegments[i].push({ probabilityZero: 1, qubit: i, id: wireSegmentID(i, 0, 1) });
     }
     for (let i = 0; i < gateColumns.length; i += 1) {
       // keep track of which qubits were affected
@@ -139,7 +152,8 @@ export const getWireSegments = createSelector(
         if (wireMask & (1 << j)) {
           wireSegments[j].push({
             probabilityZero: simulator.getProbablityZeroForQubit(j),
-            qubit: j
+            qubit: j,
+            id: wireSegmentID(j, i + 1, i + 2)
           });
         }
       }

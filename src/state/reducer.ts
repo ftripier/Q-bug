@@ -12,6 +12,9 @@ export const initialState: AppState = {
   ui: {
     layout: {
       windowSize: [0, 0]
+    },
+    tooltips: {
+      wireSegments: {}
     }
   },
   data: {

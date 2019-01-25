@@ -1,5 +1,13 @@
 .circuit-wire-segment {
-  border: 1px solid #414a4c;
   position: absolute;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circuit-wire-segment-line {
+  border: 1px solid #414a4c;
   height: 0;
+  width: 100%;
 }

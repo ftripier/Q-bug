@@ -1,0 +1,25 @@
+.wire-segment-tooltip {
+  position: absolute;
+  border: 1px solid #414a4c;
+  padding: 6px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #414a4c;
+  z-index: 10;
+  background: white;
+  pointer-events: none;
+}
+
+.wire-segment-tooltip-probability-row {
+}
+
+.wire-segment-basis-element {
+  margin-right: 6px;
+  font-weight: 600;
+}
+
+.wire-segment-tooltip-row-divider {
+  height: 1px;
+  background: #414a4c;
+  margin-top: 4px;
+  margin-bottom: 2px;
+}

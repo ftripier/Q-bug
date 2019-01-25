@@ -4,6 +4,9 @@ export interface UIState {
   layout: {
     windowSize: number[];
   };
+  tooltips: {
+    wireSegments: { [key: string]: boolean };
+  };
 }
 
 export interface WireLayout {

@@ -11,12 +11,13 @@ export const StatelessCircuit = React.memo(
   ({ gates, wireSegments }: { gates: GateLayout[]; wireSegments: WireSegmentLayout[] }) => (
     <div className="circuit-canvas">
       <div className="circuit-wire-layer">
-        {wireSegments.map(({ width, top, left, probabilityZero }, i) => (
+        {wireSegments.map(({ width, top, left, probabilityZero, id }, i) => (
           <WireSegment
             key={i}
             position={[left, top]}
             width={width}
             probabilityZero={probabilityZero}
+            id={id}
           />
         ))}
       </div>

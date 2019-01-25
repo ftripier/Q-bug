@@ -2,6 +2,9 @@ import { Matrix } from 'mathjs';
 
 export type circuit = any[];
 
+export type WireSegmentID = string;
+export type GateID = string;
+
 export interface DataState {
   circuit: circuit;
 }
@@ -22,14 +25,19 @@ export interface GateWithMask extends GateWithMatrix {
   wireMask: number;
 }
 
+export interface GateWithID extends GateWithMask {
+  id: GateID;
+}
+
 export interface GateColumn {
-  gates: GateWithMask[];
+  gates: GateWithID[];
   wireMask: number;
 }
 
 export interface WireSegment {
   probabilityZero: number;
   qubit: number;
+  id: WireSegmentID;
 }
 
 export interface CircuitGateDef {
