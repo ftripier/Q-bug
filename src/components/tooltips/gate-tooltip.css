@@ -1,0 +1,29 @@
+.gate-tooltip {
+  position: absolute;
+  border: 1px solid #414a4c;
+  padding: 6px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #414a4c;
+  z-index: 10;
+  background: white;
+  pointer-events: none;
+}
+
+.gate-tooltip-name {
+  font-weight: 600;
+}
+
+.gate-tooltip-matrix {
+  border-top: 1px solid #414a4c;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.gate-tooltip-matrix-component {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.gate-tooltip-name {
+  padding-left: 6px;
+}

@@ -11,9 +11,9 @@ export const StatelessCircuit = React.memo(
   ({ gates, wireSegments }: { gates: GateLayout[]; wireSegments: WireSegmentLayout[] }) => (
     <div className="circuit-canvas">
       <div className="circuit-wire-layer">
-        {wireSegments.map(({ width, top, left, probabilityZero, id }, i) => (
+        {wireSegments.map(({ width, top, left, probabilityZero, id }) => (
           <WireSegment
-            key={i}
+            key={id}
             position={[left, top]}
             width={width}
             probabilityZero={probabilityZero}
@@ -22,8 +22,15 @@ export const StatelessCircuit = React.memo(
         ))}
       </div>
       <div className="circuit-gate-layer">
-        {gates.map(({ name, top, left, width, height }, i) => (
-          <Gate key={i} name={name} position={[left, top]} size={[width, height]} />
+        {gates.map(({ name, top, left, width, height, id, matrix }) => (
+          <Gate
+            key={id}
+            id={id}
+            name={name}
+            position={[left, top]}
+            size={[width, height]}
+            matrix={matrix}
+          />
         ))}
       </div>
     </div>

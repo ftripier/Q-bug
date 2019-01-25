@@ -1,4 +1,4 @@
-import { GateWithMask, WireSegment } from '../data/types';
+import { GateWithMask, WireSegment, GateID, WireSegmentID, GateWithID } from '../data/types';
 
 export interface UIState {
   layout: {
@@ -6,6 +6,7 @@ export interface UIState {
   };
   tooltips: {
     wireSegments: { [key: string]: boolean };
+    gates: { [key: string]: boolean };
   };
 }
 
@@ -15,7 +16,7 @@ export interface WireLayout {
   width: number;
 }
 
-export interface GateLayout extends GateWithMask {
+export interface GateLayout extends GateWithID {
   top: number;
   left: number;
   width: number;

@@ -1,6 +1,6 @@
 import * as types from './constants';
 import { WireSegmentLayout } from './ui/types';
-import { WireSegmentID } from './data/types';
+import { WireSegmentID, GateID } from './data/types';
 
 export interface Action {
   type: string;
@@ -30,6 +30,20 @@ export const openWireSegmentTooltip = (id: WireSegmentID): Action => ({
 
 export const closeWireSegmentTooltip = (id: WireSegmentID): Action => ({
   type: types.CLOSE_WIRE_SEGMENT_TOOLTIP,
+  payload: {
+    id
+  }
+});
+
+export const openGateTooltip = (id: GateID): Action => ({
+  type: types.OPEN_GATE_TOOLTIP,
+  payload: {
+    id
+  }
+});
+
+export const closeGateTooltip = (id: GateID): Action => ({
+  type: types.CLOSE_GATE_TOOLTIP,
   payload: {
     id
   }

@@ -14,7 +14,8 @@ export const initialState: AppState = {
       windowSize: [0, 0]
     },
     tooltips: {
-      wireSegments: {}
+      wireSegments: {},
+      gates: {}
     }
   },
   data: {
