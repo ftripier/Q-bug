@@ -57,7 +57,7 @@ describe('Simulator', () => {
     expect(simulator.getProbablityZeroForQubit(1)).toBeCloseTo(1 / 2);
   });
 
-  it.only('returns the correct probabilities for an inverse ordered CNOT', () => {
+  it('returns the correct probabilities for an inverse ordered CNOT', () => {
     const simulator = new Simulator(2);
     applyAllGatesToSimulator(inverseOrderCNOT, simulator);
     expect(simulator.getProbablityZeroForQubit(0)).toBeCloseTo(0);
