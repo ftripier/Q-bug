@@ -53,19 +53,12 @@ const getGatesLayout = (wiresLayout: WireLayout[], columns: GateColumn[]): GateL
 
         let top = 0;
         let height = 0;
-        if (gate.sparse) {
-          const bottomQubit = gate.qubits[gate.qubits.length - 1];
-          left += wiresLayout[bottomQubit].left;
-          top = wiresLayout[bottomQubit].top - (circuitLayoutConfig.wire.height >> 1);
-          height = circuitLayoutConfig.wire.height;
-        } else {
-          const topQubit = gate.qubits[0];
-          const bottomQubit = gate.qubits[gate.qubits.length - 1];
-          left += wiresLayout[topQubit].left;
-          top = wiresLayout[topQubit].top - (circuitLayoutConfig.wire.height >> 1);
-          let bottom = wiresLayout[bottomQubit].top + (circuitLayoutConfig.wire.height >> 1);
-          height = bottom - top;
-        }
+        const topQubit = gate.qubits[0];
+        const bottomQubit = gate.qubits[gate.qubits.length - 1];
+        left += wiresLayout[topQubit].left;
+        top = wiresLayout[topQubit].top - (circuitLayoutConfig.wire.height >> 1);
+        let bottom = wiresLayout[bottomQubit].top + (circuitLayoutConfig.wire.height >> 1);
+        height = bottom - top;
         newGates.push({
           ...gate,
           top,
