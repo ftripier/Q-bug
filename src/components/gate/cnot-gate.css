@@ -3,10 +3,12 @@
 }
 
 .cnot-wire {
-  height: 100%;
+  height: calc(100% - 6px);
   width: 2px;
   background: #414a4c;
   position: relative;
+  left: 4px;
+  top: 6px;
 }
 
 .cnot-control-bit {

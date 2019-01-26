@@ -9,6 +9,7 @@ import { getGateTooltips } from '../../state/ui/selectors/tooltips';
 import { AppState } from '../../state/types';
 import { GateTooltip } from '../tooltips';
 import { Matrix } from 'mathjs';
+import CNOTGate from './CNOTGate';
 
 interface GateProps {
   name: string;
@@ -21,6 +22,44 @@ interface GateProps {
   matrix: Matrix;
 }
 
+const SwitchGate = ({
+  name,
+  position,
+  size,
+  openTooltip,
+  closeTooltip
+}: {
+  name: string;
+  position: number[];
+  size: number[];
+  openTooltip: () => void;
+  closeTooltip: () => void;
+}) => {
+  switch (name) {
+    case 'CNOT':
+      return (
+        <div onMouseEnter={openTooltip} onMouseLeave={closeTooltip}>
+          <CNOTGate left={position[0]} from={position[1]} to={position[1] + size[1]} />
+        </div>
+      );
+    default:
+      return (
+        <div
+          className="circuit-gate"
+          style={{
+            transform: `translate(${position[0]}px, ${position[1]}px)`,
+            width: `${size[0]}px`,
+            height: `${size[1]}px`
+          }}
+          onMouseEnter={openTooltip}
+          onMouseLeave={closeTooltip}
+        >
+          <div className="circuit-gate-label">{name}</div>
+        </div>
+      );
+  }
+};
+
 export const StatelessGate = React.memo(function Gate({
   name,
   position,
@@ -32,18 +71,7 @@ export const StatelessGate = React.memo(function Gate({
 }: GateProps) {
   return (
     <React.Fragment>
-      <div
-        className="circuit-gate"
-        style={{
-          transform: `translate(${position[0]}px, ${position[1]}px)`,
-          width: `${size[0]}px`,
-          height: `${size[1]}px`
-        }}
-        onMouseEnter={openTooltip}
-        onMouseLeave={closeTooltip}
-      >
-        <div className="circuit-gate-label">{name}</div>
-      </div>
+      <SwitchGate {...{ name, position, size, openTooltip, closeTooltip }} />
       <CSSTransitionGroup
         transitionName="tooltip"
         transitionEnterTimeout={300}

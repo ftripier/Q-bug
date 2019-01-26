@@ -3,7 +3,7 @@ import { getNumberOfQubits, getGateColumns, getWireSegments } from '../../data/s
 import circuitLayoutConfig from '../../../components/circuit/circuitLayoutConfig';
 import { AppState } from '../../types';
 import { WireLayout, GateLayout, WireSegmentLayout } from '../types';
-import { GateColumn, WireSegment } from '../../data/types';
+import { GateColumn, WireSegment, GateWithID } from '../../data/types';
 
 const getLayoutState = (state: AppState) => state.ui.layout;
 
@@ -41,31 +41,50 @@ const getWiresLayout = (windowSize: number[], numberOfQubits: number): WireLayou
   return wires;
 };
 
+const switchGateLayout = (gate: GateWithID, columnIndex: number, wiresLayout: WireLayout[]) => {
+  let left =
+    (columnIndex + 1) * circuitLayoutConfig.gate.margin.left +
+    columnIndex * circuitLayoutConfig.gate.width;
+  let top = 0;
+  let bottom = 0;
+  let height = 0;
+  let width = 0;
+
+  const topQubit = gate.qubits[0];
+  const bottomQubit = gate.qubits[gate.qubits.length - 1];
+
+  switch (gate.name) {
+    case 'CNOT':
+      left += wiresLayout[topQubit].left;
+      top = wiresLayout[topQubit].top;
+      bottom = wiresLayout[bottomQubit].top;
+      height = bottom - top;
+      width = 0;
+      break;
+    default:
+      left += wiresLayout[topQubit].left;
+      top = wiresLayout[topQubit].top - (circuitLayoutConfig.wire.height >> 1);
+      bottom = wiresLayout[bottomQubit].top + (circuitLayoutConfig.wire.height >> 1);
+      height = bottom - top;
+      width = circuitLayoutConfig.gate.width;
+  }
+
+  return {
+    ...gate,
+    top,
+    left,
+    width,
+    height
+  };
+};
+
 const getGatesLayout = (wiresLayout: WireLayout[], columns: GateColumn[]): GateLayout[] => {
   const laidOut = columns.reduce(
     (gates: GateLayout[], column: GateColumn, columnIndex: number): GateLayout[] => {
       const newGates = [];
       for (let i = 0; i < column.gates.length; i += 1) {
         const gate = column.gates[i];
-        let left =
-          (columnIndex + 1) * circuitLayoutConfig.gate.margin.left +
-          columnIndex * circuitLayoutConfig.gate.width;
-
-        let top = 0;
-        let height = 0;
-        const topQubit = gate.qubits[0];
-        const bottomQubit = gate.qubits[gate.qubits.length - 1];
-        left += wiresLayout[topQubit].left;
-        top = wiresLayout[topQubit].top - (circuitLayoutConfig.wire.height >> 1);
-        let bottom = wiresLayout[bottomQubit].top + (circuitLayoutConfig.wire.height >> 1);
-        height = bottom - top;
-        newGates.push({
-          ...gate,
-          top,
-          left,
-          width: circuitLayoutConfig.gate.width,
-          height
-        });
+        newGates.push(switchGateLayout(gate, columnIndex, wiresLayout));
       }
       return gates.concat(newGates);
     },

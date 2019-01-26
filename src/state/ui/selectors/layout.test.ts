@@ -5,6 +5,7 @@ import { setCircuitState, setWindowSize } from '../../actionCreators';
 import { getCircuitLayout, getWindowSize } from './layout';
 import { circuit } from '../../data/types';
 import { WireSegmentLayout } from '../types';
+import superposition from '../../../testing/fixtures/superposition';
 
 const STANDARD_WINDOW = [1440, 600];
 
@@ -257,6 +258,15 @@ describe('getCircuitLayout', () => {
         const { left, width } = gates[i];
         expect(left).toBeGreaterThanOrEqual(topWire.left + circuitLayoutConfig.gate.margin.left);
         expect(left + width).toBeLessThanOrEqual(topWire.left + topWire.width);
+      }
+    });
+
+    it('allocates zero pixels of width to CNOT gates', () => {
+      const state = prepareCircuitState(superposition, STANDARD_WINDOW);
+      const { gates } = getCircuitLayout(state);
+      for (let i = 0; i < gates.length; i += 1) {
+        const { name, width } = gates[i];
+        if (name === 'CNOT') expect(width).toEqual(0);
       }
     });
   });
