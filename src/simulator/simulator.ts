@@ -69,8 +69,6 @@ function twoSwapHelper(
         adjacentLiftedGateMatrix(SWAP, i, n),
         permutationMatrix
       ) as Matrix;
-      throw new Error(indexArr.toString() + i + j + k);
-
       swap(indexArr, i + 1, i);
     }
   }
@@ -92,7 +90,7 @@ function arbitraryPermutation(
   const median = sorted[medianIndex];
 
   const startIndex = median - medianIndex;
-  const finalMap = math.range(startIndex + indices.length - 1, startIndex - 1, -1);
+  const finalMap = math.range(startIndex, startIndex + indices.length);
 
   let indexArr = math.range(0, n);
 
@@ -108,15 +106,16 @@ function arbitraryPermutation(
       // two swap helper
       const currIndex = (indexArr.toArray() as number[]).findIndex(index => index === indices[i]);
       ({ permutationMatrix: pmod, indexArr } = twoSwapHelper(
-        currIndex,
         finalMap.get([i]),
+        currIndex,
         n,
         indexArr
       ));
 
       permutationMatrix = math.multiply(pmod, permutationMatrix) as Matrix;
+
       const indexArrIndex = math.index(
-        math.range(finalMap.get([0]), finalMap.get([finalMap.size()[0] - 1]) - 1, -1)
+        math.range(finalMap.get([0]), finalMap.get([finalMap.size()[0] - 1]) + 1)
       );
       if (math.deepEqual(indexArr.subset(indexArrIndex), indices)) {
         madeIt = true;
