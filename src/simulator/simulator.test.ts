@@ -1,5 +1,9 @@
 import Simulator from './simulator';
 import standardGates from './standardGates';
+import superposition from '../testing/fixtures/superposition';
+import { getGateColumns } from '../state/data/selectors/circuit';
+import reducer, { initialState } from '../state/reducer';
+import { setCircuitState } from '../state/actionCreators';
 
 describe('Simulator', () => {
   it('has probability = 1 of measuring zero for all qubits initially', () => {
@@ -31,6 +35,18 @@ describe('Simulator', () => {
       sparse: false,
       wireMask: 1
     });
+    expect(simulator.getProbablityZeroForQubit(0)).toBeCloseTo(1 / 2);
+    expect(simulator.getProbablityZeroForQubit(1)).toBeCloseTo(1 / 2);
+  });
+
+  it('returns the correct probabilites for a bell state', () => {
+    const simulator = new Simulator(2);
+    const state = reducer(initialState, setCircuitState(superposition));
+    const gateColumns = getGateColumns(state);
+    for (let i = 0; i < gateColumns.length; i += 1) {
+      const { gates } = gateColumns[i];
+      gates.forEach(gate => simulator.applyGate(gate));
+    }
     expect(simulator.getProbablityZeroForQubit(0)).toBeCloseTo(1 / 2);
     expect(simulator.getProbablityZeroForQubit(1)).toBeCloseTo(1 / 2);
   });

@@ -41,7 +41,7 @@ function adjacentLiftedGateMatrix(matrix: Matrix, qubit: number, n: number): Mat
   const topQubits = n - qubit - gateQubits;
   const topMatrix = identity(2 ** topQubits);
 
-  return math.kron(topMatrix, math.kron(matrix, bottomMatrix));
+  return math.kron(math.kron(bottomMatrix, matrix), topMatrix);
 }
 
 function twoSwapHelper(

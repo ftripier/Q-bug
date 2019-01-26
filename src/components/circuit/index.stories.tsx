@@ -7,6 +7,7 @@ import { setCircuitState, setWindowSize } from '../../state/actionCreators';
 import reducer from '../../state/reducer';
 import Circuit from './index';
 import groversAlgorithm from '../../testing/fixtures/groversAlgorithm';
+import superposition from '../../testing/fixtures/superposition';
 
 const prepareStore = (circuit: circuit, windowSize: number[]) => {
   const store = createStore(reducer);
@@ -15,8 +16,14 @@ const prepareStore = (circuit: circuit, windowSize: number[]) => {
   return store;
 };
 
-storiesOf('Circuit', module).add("Grover's algorithm", () => (
-  <Provider store={prepareStore(groversAlgorithm, [600, 400])}>
-    <Circuit />
-  </Provider>
-));
+storiesOf('Circuit', module)
+  .add("Grover's algorithm", () => (
+    <Provider store={prepareStore(groversAlgorithm, [600, 400])}>
+      <Circuit />
+    </Provider>
+  ))
+  .add('Bell state', () => (
+    <Provider store={prepareStore(superposition, [600, 400])}>
+      <Circuit />
+    </Provider>
+  ));
