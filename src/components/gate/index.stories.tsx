@@ -5,6 +5,9 @@ import math from 'mathjs';
 
 import { StatelessGate as Gate } from './index';
 import standardGates from '../../simulator/standardGates';
+import CNOTGate from './CNOTGate';
+import { ControlBit } from './ControlBit';
+import { XGate } from './XGate';
 
 storiesOf('Gate', module)
   .add('Hadamard Gate', () => (
@@ -37,4 +40,8 @@ storiesOf('Gate', module)
       ])}
       id="fake id"
     />
-  ));
+  ))
+  .add('Control Bit', () => <ControlBit />)
+  .add('X Gate', () => <XGate />)
+  .add('CNOT Gate - top to bottom', () => <CNOTGate left={50} from={25} to={75} />)
+  .add('CNOT Gate - bottom to top', () => <CNOTGate left={75} from={250} to={75} />);

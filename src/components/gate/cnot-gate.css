@@ -1,0 +1,20 @@
+.cnot-gate {
+  position: absolute;
+}
+
+.cnot-wire {
+  height: 100%;
+  width: 2px;
+  background: #414a4c;
+  position: relative;
+}
+
+.cnot-control-bit {
+  position: absolute;
+  transform: translateX(-35%) translateY(-50%);
+}
+
+.cnot-x-gate {
+  position: absolute;
+  transform: translateX(-47%);
+}
