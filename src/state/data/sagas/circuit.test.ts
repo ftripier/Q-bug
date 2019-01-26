@@ -30,16 +30,6 @@ describe('circuit data saga', () => {
     const storeState = await createCircuitState(GroversQuilSource);
     expect(getCircuit(storeState)).toBeTruthy();
   });
-  it('stores all the circuit gates with targeted qubits in sorted order', async () => {
-    const storeState = await createCircuitState(GroversQuilSource);
-    const gates = getGates(storeState);
-    for (let i = 0; i < gates.length; i += 1) {
-      const { qubits } = gates[i];
-      for (let j = 1; j < qubits.length; j += 1) {
-        expect(qubits[j] > qubits[j - 1]);
-      }
-    }
-  });
   it('stores all the circuit gate definitions with parsed matrices', async () => {
     const storeState = await createCircuitState(GroversQuilSource);
     let gateDefs = getGateDefs(storeState);

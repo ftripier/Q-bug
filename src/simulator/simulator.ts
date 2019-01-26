@@ -56,7 +56,7 @@ function twoSwapHelper(
   if (j == k) {
     return { permutationMatrix, indexArr };
   } else if (j > k) {
-    for (let i = j; i < k; i -= 1) {
+    for (let i = j; i > k; i -= 1) {
       permutationMatrix = math.multiply(
         adjacentLiftedGateMatrix(SWAP, i - 1, n),
         permutationMatrix
@@ -69,6 +69,8 @@ function twoSwapHelper(
         adjacentLiftedGateMatrix(SWAP, i, n),
         permutationMatrix
       ) as Matrix;
+      throw new Error(indexArr.toString() + i + j + k);
+
       swap(indexArr, i + 1, i);
     }
   }
@@ -85,11 +87,12 @@ function arbitraryPermutation(
 ): { permutationMatrix: Matrix; startIndex: number } {
   let permutationMatrix = identity(2 ** n);
 
-  const medianIndex = indices.length >> 1;
-  const median = indices[medianIndex];
+  const sorted = indices.slice().sort();
+  const medianIndex = sorted.length >> 1;
+  const median = sorted[medianIndex];
 
   const startIndex = median - medianIndex;
-  const finalMap = math.range(startIndex, startIndex + indices.length, -1);
+  const finalMap = math.range(startIndex + indices.length - 1, startIndex - 1, -1);
 
   let indexArr = math.range(0, n);
 
@@ -97,9 +100,13 @@ function arbitraryPermutation(
   let right = true;
   let pmod;
   while (!madeIt) {
-    for (let i = 0; i < indices.length; i += right ? 1 : -1) {
+    for (
+      let i = right ? 0 : indices.length - 1;
+      right ? i < indices.length : i >= 0;
+      i += right ? 1 : -1
+    ) {
       // two swap helper
-      const currIndex = (indexArr.toArray() as number[]).findIndex(index => index == indices[i]);
+      const currIndex = (indexArr.toArray() as number[]).findIndex(index => index === indices[i]);
       ({ permutationMatrix: pmod, indexArr } = twoSwapHelper(
         currIndex,
         finalMap.get([i]),
@@ -109,7 +116,7 @@ function arbitraryPermutation(
 
       permutationMatrix = math.multiply(pmod, permutationMatrix) as Matrix;
       const indexArrIndex = math.index(
-        math.range(finalMap.get([finalMap.size()[0] - 1]), finalMap.get([0]), -1)
+        math.range(finalMap.get([0]), finalMap.get([finalMap.size()[0] - 1]) - 1, -1)
       );
       if (math.deepEqual(indexArr.subset(indexArrIndex), indices)) {
         madeIt = true;
