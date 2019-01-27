@@ -10,7 +10,7 @@ const formatNumber = (num: number | Complex) => {
     if (Math.abs(Math.abs(num) - Math.sqrt(2) / 2) < EPSILON) {
       return `${num < 0 ? '-' : ''}1/√2`;
     }
-    return num.toFixed(2);
+    return Math.round(num * 100) / 100;
   }
   return num;
 };
