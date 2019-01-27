@@ -18,7 +18,7 @@ const prepareStore = (circuit: circuit, windowSize: number[]) => {
 
 storiesOf('Circuit', module)
   .add("Grover's algorithm", () => (
-    <Provider store={prepareStore(groversAlgorithm, [600, 400])}>
+    <Provider store={prepareStore(groversAlgorithm, [1000, 400])}>
       <Circuit />
     </Provider>
   ))

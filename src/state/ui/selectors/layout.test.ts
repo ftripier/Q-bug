@@ -257,7 +257,9 @@ describe('getCircuitLayout', () => {
       for (let i = 0; i < gates.length; i += 1) {
         const { left, width } = gates[i];
         expect(left).toBeGreaterThanOrEqual(topWire.left + circuitLayoutConfig.gate.margin.left);
-        expect(left + width).toBeLessThanOrEqual(topWire.left + topWire.width);
+        expect(left + width).toBeLessThanOrEqual(
+          topWire.left + topWire.width - circuitLayoutConfig.wire.margin
+        );
       }
     });
 

@@ -78,21 +78,36 @@ const switchGateLayout = (gate: GateWithID, columnIndex: number, wiresLayout: Wi
   };
 };
 
-const getGatesLayout = (wiresLayout: WireLayout[], columns: GateColumn[]): GateLayout[] => {
-  const laidOut = columns.reduce(
-    (gates: GateLayout[], column: GateColumn, columnIndex: number): GateLayout[] => {
-      const newGates = [];
-      for (let i = 0; i < column.gates.length; i += 1) {
-        const gate = column.gates[i];
-        newGates.push(switchGateLayout(gate, columnIndex, wiresLayout));
-      }
-      return gates.concat(newGates);
-    },
-    []
-  );
+function applyFlexiblePositionToGate(
+  baseGateLayout: GateLayout,
+  columns: GateColumn[],
+  wires: WireLayout[],
+  columnsIndex: number
+) {
+  const topQubit = baseGateLayout.qubits[0];
+  const { width: wireWidth } = wires[topQubit];
+  const allocatableWidth = wireWidth - circuitLayoutConfig.wire.margin * 2;
+  const flexibleLeft = (allocatableWidth / columns.length) * (columnsIndex + 1);
+  const left = Math.max(baseGateLayout.left, flexibleLeft);
+  return { ...baseGateLayout, left };
+}
 
-  return laidOut;
-};
+const getGatesLayout = (wiresLayout: WireLayout[], columns: GateColumn[]): GateLayout[] =>
+  columns.reduce((gates: GateLayout[], column: GateColumn, columnIndex: number): GateLayout[] => {
+    const newGates = [];
+    for (let i = 0; i < column.gates.length; i += 1) {
+      const gate = column.gates[i];
+      const gateLayout = switchGateLayout(gate, columnIndex, wiresLayout);
+      const flexiblePositionApplied = applyFlexiblePositionToGate(
+        gateLayout,
+        columns,
+        wiresLayout,
+        columnIndex
+      );
+      newGates.push(flexiblePositionApplied);
+    }
+    return gates.concat(newGates);
+  }, []);
 
 const getWireSegmentsLayout = (
   wireSegmentState: WireSegment[][],

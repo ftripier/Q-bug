@@ -14,11 +14,11 @@ export default {
     left: 60
   },
   wire: {
-    height: 60,
+    height: 40,
     margin: 18
   },
   gate: {
-    width: 60,
+    width: 40,
     margin: {
       left: 18
     }
