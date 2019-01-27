@@ -10,7 +10,7 @@ import { getWireSegmentTooltips } from '../../state/ui/selectors/tooltips';
 import { WireSegmentTooltip } from '../tooltips';
 
 function injectBlurStyles(probabilityZero: number) {
-  const blurPx = (1 - probabilityZero) * 2;
+  const blurPx = (1 - probabilityZero) * 4;
   const blurString = `blur(${blurPx}px)`;
   return {
     WebkitFilter: blurString,
