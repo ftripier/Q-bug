@@ -1,0 +1,10 @@
+.circuit-matrix {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}
+
+.circuit-matrix-column {
+  justify-self: center;
+  align-self: center;
+}

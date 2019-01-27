@@ -2,6 +2,8 @@ import './gate-tooltip.css';
 import React from 'react';
 import { Matrix, Complex } from 'mathjs';
 
+import CircuitMatrix from '../matrix';
+
 const EPSILON = 1e-2;
 
 const formatNumber = (num: number | Complex) => {
@@ -20,13 +22,7 @@ export default React.memo(
     <div className="gate-tooltip" style={{ transform: `translate(${left}px, ${top}px)` }}>
       <div className="gate-tooltip-name">{name}</div>
       <div className="gate-tooltip-matrix">
-        {(matrix.toArray() as (number | Complex)[][]).map(row => (
-          <div className="gate-tooltip-matrix-row">
-            {row.map(c => (
-              <span className="gate-tooltip-matrix-component">{formatNumber(c)}</span>
-            ))}
-          </div>
-        ))}
+        <CircuitMatrix matrix={matrix} />
       </div>
     </div>
   )
