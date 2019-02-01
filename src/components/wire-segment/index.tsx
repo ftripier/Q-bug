@@ -8,9 +8,12 @@ import { WireSegmentID } from '../../state/data/types';
 import { AppState } from '../../state/types';
 import { getWireSegmentTooltips } from '../../state/ui/selectors/tooltips';
 import { WireSegmentTooltip } from '../tooltips';
+import LiveWire from './LiveWire';
 
-function injectBlurStyles(probabilityZero: number) {
-  const blurPx = (1 - probabilityZero) * 4;
+const BLUR_PIXEL_UPPER_BOUND = 3;
+
+function injectBlurStyles(percentBlurriness: number) {
+  const blurPx = percentBlurriness * BLUR_PIXEL_UPPER_BOUND;
   const blurString = `blur(${blurPx}px)`;
   return {
     WebkitFilter: blurString,
@@ -19,6 +22,38 @@ function injectBlurStyles(probabilityZero: number) {
     msFilter: blurString
   };
 }
+
+const injectTransparencyStyles = (percentTransparency: number) => ({
+  opacity: 1 - percentTransparency
+});
+
+const SuperpositionWire = ({
+  probabilityZero,
+  width
+}: {
+  probabilityZero: number;
+  width: number;
+}) => {
+  const probabilityOne = 1 - probabilityZero;
+  return (
+    <div className="circuit-wire-superposition-wire">
+      <div
+        className="circuit-inactive-wire-segment-line"
+        style={{
+          ...injectBlurStyles(probabilityOne),
+          ...injectTransparencyStyles(probabilityOne)
+        }}
+      />
+      <div className="circuit-active-wire-segment-line" />
+      <LiveWire
+        width={width}
+        density={probabilityOne}
+        blur={probabilityZero}
+        {...injectTransparencyStyles(probabilityZero)}
+      />
+    </div>
+  );
+};
 
 interface WireSegmentProps {
   position: number[];
@@ -49,10 +84,7 @@ export const StatelessWireSegment = React.memo(
         onMouseEnter={openTooltip}
         onMouseLeave={closeTooltip}
       >
-        <div
-          className="circuit-wire-segment-line"
-          style={{ ...injectBlurStyles(probabilityZero) }}
-        />
+        <SuperpositionWire {...{ probabilityZero, width }} />
       </div>
       <CSSTransitionGroup
         transitionName="tooltip"

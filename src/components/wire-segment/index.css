@@ -6,10 +6,25 @@
   align-items: center;
 }
 
-.circuit-wire-segment-line {
+.circuit-wire-superposition-wire {
+  position: relative;
+  height: 60px;
+}
+
+.circuit-inactive-wire-segment-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
   border: 1px solid #414a4c;
   height: 0;
   width: 100%;
+}
+
+.circuit-active-wire-segment-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-50%);
 }
 
 .tooltip-enter {
