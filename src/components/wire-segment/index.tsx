@@ -88,11 +88,12 @@ export const StatelessWireSegment = React.memo(
       </div>
       <CSSTransitionGroup
         transitionName="tooltip"
-        transitionEnterTimeout={300}
-        transitionLeaveTimeout={300}
+        transitionEnterTimeout={150}
+        transitionLeaveTimeout={50}
       >
         {tooltipIsOpen && (
           <WireSegmentTooltip
+            key="wire-tooltip"
             top={position[1]}
             left={position[0]}
             probabilityZero={probabilityZero}

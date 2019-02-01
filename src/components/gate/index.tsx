@@ -35,6 +35,7 @@ const SwitchGate = ({
   openTooltip: () => void;
   closeTooltip: () => void;
 }) => {
+  const sidewaysNameDisplay = name.length >= 7 && size[1] >= 60;
   switch (name) {
     case 'CNOT':
       return (
@@ -54,7 +55,9 @@ const SwitchGate = ({
           onMouseEnter={openTooltip}
           onMouseLeave={closeTooltip}
         >
-          <div className="circuit-gate-label">{name}</div>
+          <div className={`${sidewaysNameDisplay ? 'sideways-text' : ''} circuit-gate-label`}>
+            {name}
+          </div>
         </div>
       );
   }
@@ -74,11 +77,17 @@ export const StatelessGate = React.memo(function Gate({
       <SwitchGate {...{ name, position, size, openTooltip, closeTooltip }} />
       <CSSTransitionGroup
         transitionName="tooltip"
-        transitionEnterTimeout={300}
-        transitionLeaveTimeout={300}
+        transitionEnterTimeout={150}
+        transitionLeaveTimeout={50}
       >
         {tooltipIsOpen && (
-          <GateTooltip top={position[1]} left={position[0]} name={name} matrix={matrix} />
+          <GateTooltip
+            key="gate-tooltip"
+            top={position[1]}
+            left={position[0]}
+            name={name}
+            matrix={matrix}
+          />
         )}
       </CSSTransitionGroup>
     </React.Fragment>

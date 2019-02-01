@@ -1,3 +1,8 @@
+.sideways-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
 .circuit-gate {
   position: absolute;
   border: 1px solid #414a4c;

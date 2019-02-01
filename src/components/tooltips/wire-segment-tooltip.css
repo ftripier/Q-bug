@@ -1,12 +1,13 @@
 .wire-segment-tooltip {
   position: absolute;
-  border: 1px solid #414a4c;
   padding: 6px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #414a4c;
+  background: #414a4c;
+  color: white;
   z-index: 10;
-  background: white;
   pointer-events: none;
+  border-radius: 6px;
+  box-shadow: 2px 2px 8px #556164a9;
 }
 
 .wire-segment-tooltip-probability-row {
@@ -19,7 +20,7 @@
 
 .wire-segment-tooltip-row-divider {
   height: 1px;
-  background: #414a4c;
+  background: white;
   margin-top: 4px;
   margin-bottom: 2px;
 }

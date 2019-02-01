@@ -34,7 +34,7 @@
 
 .tooltip-enter.tooltip-enter-active {
   opacity: 1;
-  transition: opacity 300ms ease-in, transform 300ms ease-out;
+  transition: opacity 150ms ease-in, transform 150ms ease-out;
   transform: scaleY(1);
 }
 
@@ -45,6 +45,6 @@
 
 .tooltip-leave.tooltip-leave-active {
   opacity: 0.01;
-  transition: opacity 300ms ease-in, transform 300ms ease-out;
+  transition: opacity 50ms ease-in, transform 50ms ease-out;
   transform: scaleY(0.88);
 }

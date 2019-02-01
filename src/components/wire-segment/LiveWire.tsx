@@ -63,7 +63,7 @@ const LiveWire = ({
         points={sawWavePoints(width, WIRE_HEIGHT, density)}
         fill="none"
         stroke="#414a4c"
-        stroke-width="2"
+        strokeWidth="2"
         filter={`url(#${blurID})`}
       />
     </svg>
