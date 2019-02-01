@@ -1,20 +1,9 @@
-.sideways-text {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-}
-
 .circuit-gate {
   position: absolute;
   border: 1px solid #414a4c;
-  display: flex;
-  align-items: center;
   overflow: hidden;
-  margin: auto;
-  padding-left: 6px;
-  padding-right: 6px;
   box-sizing: border-box;
   background: white;
-  word-break: break-all;
 }
 
 .circuit-gate-label {
@@ -22,5 +11,16 @@
   color: #414a4c;
   font-size: 1rem;
   width: 100%;
-  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sideways-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  text-align: left;
+  justify-content: start;
+  margin-top: 6px;
 }
