@@ -4,7 +4,7 @@ import circuitSaga from './circuit';
 import rootReducer from '../../reducer';
 import { createSocketConnection } from '../../../api/socket';
 import { GroversQuilSource } from '../../../testing/fixtures/groversAlgorithm';
-import { getCircuit, getGates, getGateDefs } from '../selectors/circuit';
+import { getCircuit, getGateDefs } from '../selectors/circuit';
 import { initializeApplication } from '../../actionCreators';
 
 function createMockSocket(socketData: string) {
@@ -21,7 +21,7 @@ async function createCircuitState(quilSource: string) {
     .withReducer(rootReducer)
     .provide([[call(createSocketConnection), createMockSocket(quilSource)]])
     .dispatch(initializeApplication())
-    .run();
+    .silentRun();
   return storeState;
 }
 
