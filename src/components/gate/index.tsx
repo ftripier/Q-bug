@@ -83,7 +83,7 @@ export const StatelessGate = React.memo(function Gate({
         {tooltipIsOpen && (
           <GateTooltip
             key="gate-tooltip"
-            top={position[1]}
+            top={position[1] + size[1]}
             left={position[0]}
             name={name}
             matrix={matrix}
